@@ -1,6 +1,11 @@
 import { ThemeProvider } from "@/components/theme-provider"
+import { ReactNode } from "react";
 
-function App({children}) {
+interface MyComponentProps {
+  children: ReactNode; 
+}
+
+const App: React.FC<MyComponentProps> = ({ children }) => {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       {children}

@@ -3,6 +3,11 @@ import { Input } from "./ui/input";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useState, useEffect } from "react";
 
+
+interface StringKeyObject {
+  [key: string]: any;
+}
+
 export default function Dashborad(){
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [csvData, setCsvData] = useState<Array<object>>([]);
@@ -36,8 +41,7 @@ export default function Dashborad(){
                 const reader = new FileReader();
                 reader.onloadend = (e:ProgressEvent<FileReader>) => {
                     const text = e.target!.result;
-                    const newArray = [...csvData, ...parseCSV(text!)]
-                    setCsvData(newArray)
+                    setCsvData((prevArray) => [...prevArray, ...parseCSV(text!)])
                 }
                 reader.readAsText(file)
           } 
@@ -51,12 +55,14 @@ export default function Dashborad(){
         const values = csvData.slice(1); // Exclude the first row (header)
 
         const objectsArray = values.map(row => {
-            const obj: {[key: string]: string}[] = {};
+            const obj: StringKeyObject = {};
             keys.forEach((key:string, index:number) => {
                 obj[key] = row[index];
             });
             return obj;
         });
+
+        console.log(objectsArray)
 
         return objectsArray;
     }
@@ -77,7 +83,7 @@ export default function Dashborad(){
                 {flag ? <Input type='file' accept='.csv' className='file:py-9 file:px-4 file:cursor-pointer  file:flex-col file:justify-center file:text-primary h-28 w-60 mt-36 cursor-pointer text-primary border-secondary hover:bg-accent' onChange={handleFileChange} multiple/> :
                 <ScrollArea className="w-full mt-16 bg-accent rounded-lg">
                     <pre className="flex flex-row flex-wrap p-4 justify-between items-center">
-                        {csvData.map((data:any)=><div key={JSON.stringify(data)}>{JSON.stringify(data, null, 2)}</div>)}
+                        {csvData.map((data:any, index:any)=><div key={index}>{JSON.stringify(data, null, 2)}</div>)}
                     </pre>
                     <ScrollBar/>
                 </ScrollArea>}
