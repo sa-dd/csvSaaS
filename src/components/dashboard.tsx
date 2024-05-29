@@ -1,6 +1,6 @@
 import { ModeToggle } from "./mode-toggle";
 import { Input } from "./ui/input";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "./ui/scroll-area";
 import { useState, useEffect } from "react";
 
 export default function Dashborad(){
@@ -72,8 +72,8 @@ export default function Dashborad(){
             <div className='flex flex-col items-center w-1/2 h-[90%]  rounded-md'>
                 <h1 className='overline decoration-wavy decoration-secondary text-[5rem] font-bold mt-16 text-accent-foreground font-mono'> Upload Your CSVs </h1>
                 {flag ? <Input type='file' accept='.csv' className='file:py-9 file:px-4 file:cursor-pointer  file:flex-col file:justify-center file:text-primary h-28 w-60 mt-36 cursor-pointer text-primary border-secondary hover:bg-accent' onChange={handleFileChange} multiple/> :
-                <ScrollArea className="h-[100px] w-full mt-16">
-                    <pre className="flex flex-col bg-accent p-4 mt-6 rounded-lg my-2 h-[200px] overflow-y-hidden">
+                <ScrollArea className=" w-full mt-16 bg-accent rounder-lg">
+                    <pre className="flex flex-row flex-wrap p-4 justify-between items-center">
                         {csvData.map(data=><div key={data['barcode']}>{JSON.stringify(data, null, 2)}</div>)}
                     </pre>
                 </ScrollArea>}
