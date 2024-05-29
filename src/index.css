@@ -74,5 +74,13 @@
       @apply bg-background text-foreground;
     }
 } 
-
+::-webkit-scrollbar-thumb {
+    background: #000;
+    border-radius: 5px;
+}
+ 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 /*hsl(216.92deg 11.45% 78.83%)*/

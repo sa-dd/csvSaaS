@@ -1,11 +1,11 @@
 import { ModeToggle } from "./mode-toggle";
 import { Input } from "./ui/input";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { useState, useEffect } from "react";
 
 export default function Dashborad(){
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [csvData, setCsvData] = useState([]);
+  const [csvData, setCsvData] = useState<Array<object>>([]);
   const [flag, setFlag] = useState<boolean>(true);
 
   useEffect(()=>{
@@ -31,11 +31,13 @@ export default function Dashborad(){
   };
  
   useEffect(()=>{
+
           for(const file of selectedFiles!) {
                 const reader = new FileReader();
                 reader.onloadend = (e:ProgressEvent<FileReader>) => {
                     const text = e.target!.result;
-                    setCsvData((prevArray)=>[...prevArray , ...parseCSV(text!)])
+                    const newArray = [...csvData, ...parseCSV(text!)]
+                    setCsvData(newArray)
                 }
                 reader.readAsText(file)
           } 
@@ -43,14 +45,14 @@ export default function Dashborad(){
 
   },[selectedFiles])
 
-    function csvToObjectArray(csvData:any) {
+    function csvToObjectArray(csvData:Array<Array<string>>) {
 
         const keys = csvData[0];
         const values = csvData.slice(1); // Exclude the first row (header)
 
         const objectsArray = values.map(row => {
-            const obj = {};
-            keys.forEach((key, index) => {
+            const obj: {[key: string]: string}[] = {};
+            keys.forEach((key:string, index:number) => {
                 obj[key] = row[index];
             });
             return obj;
@@ -60,6 +62,7 @@ export default function Dashborad(){
     }
 
    const parseCSV = (csvText:string | ArrayBuffer) => {
+        csvText = csvText as string;
         const rows = csvText.split('\n');
         const data = rows.map((row:string) => row.split(','));
         return csvToObjectArray(data);
@@ -72,10 +75,11 @@ export default function Dashborad(){
             <div className='flex flex-col items-center w-1/2 h-[90%]  rounded-md'>
                 <h1 className='overline decoration-wavy decoration-secondary text-[5rem] font-bold mt-16 text-accent-foreground font-mono'> Upload Your CSVs </h1>
                 {flag ? <Input type='file' accept='.csv' className='file:py-9 file:px-4 file:cursor-pointer  file:flex-col file:justify-center file:text-primary h-28 w-60 mt-36 cursor-pointer text-primary border-secondary hover:bg-accent' onChange={handleFileChange} multiple/> :
-                <ScrollArea className=" w-full mt-16 bg-accent rounder-lg">
+                <ScrollArea className="w-full mt-16 bg-accent rounded-lg">
                     <pre className="flex flex-row flex-wrap p-4 justify-between items-center">
-                        {csvData.map(data=><div key={data['barcode']}>{JSON.stringify(data, null, 2)}</div>)}
+                        {csvData.map((data:any)=><div key={JSON.stringify(data)}>{JSON.stringify(data, null, 2)}</div>)}
                     </pre>
+                    <ScrollBar/>
                 </ScrollArea>}
             </div>
         </div>
