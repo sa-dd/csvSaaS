@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 export default function Dashborad(){
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [csvData, setCsvData] = useState([]);
+  const [flag, setFlag] = useState<boolean>(true);
 
   useEffect(()=>{
     console.log(csvData)
@@ -26,6 +27,7 @@ export default function Dashborad(){
       return;
     }
     setSelectedFiles(newFiles);
+    setFlag(false);
   };
  
   useEffect(()=>{
@@ -69,12 +71,12 @@ export default function Dashborad(){
             <ModeToggle/>
             <div className='flex flex-col items-center w-1/2 h-[90%]  rounded-md'>
                 <h1 className='overline decoration-wavy decoration-secondary text-[5rem] font-bold mt-16 text-accent-foreground font-mono'> Upload Your CSVs </h1>
-                <Input type='file' accept='.csv' className='file:py-9 file:px-4 file:cursor-pointer  file:flex-col file:justify-center file:text-primary h-28 w-60 mt-36 cursor-pointer text-primary border-secondary hover:bg-accent' onChange={handleFileChange} multiple/>
-                <ScrollArea className="h-[100px] w-full">
+                {flag ? <Input type='file' accept='.csv' className='file:py-9 file:px-4 file:cursor-pointer  file:flex-col file:justify-center file:text-primary h-28 w-60 mt-36 cursor-pointer text-primary border-secondary hover:bg-accent' onChange={handleFileChange} multiple/> :
+                <ScrollArea className="h-[100px] w-full mt-16">
                     <pre className="flex flex-col bg-accent p-4 mt-6 rounded-lg my-2 h-[200px] overflow-y-hidden">
                         {csvData.map(data=><div key={data['barcode']}>{JSON.stringify(data, null, 2)}</div>)}
                     </pre>
-                </ScrollArea>
+                </ScrollArea>}
             </div>
         </div>
   )
